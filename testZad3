@@ -1,0 +1,4 @@
+#! /bin/bash
+
+#for ip in 192.168.1.$(seq 254); do ping -c 3 -t 1 $ip > ./output && echo "${ip} is up"; done
+for i in $(seq 254); do (ping 192.168.1.$i -c 3 -w 5 >/dev/null && echo "192.168.1.$i" &); done
