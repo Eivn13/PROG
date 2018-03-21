@@ -2,20 +2,23 @@
 
 #for ip in 192.168.1.$(seq 254); do ping -c 3 -t 1 $ip > ./output && echo "${ip} is up"; done
 #for i in $(seq 254); do (ping 192.168.1.$i -c 3 -w 5 >/dev/null && echo "192.168.1.$i" &); done
-if [ "$1" = "--help" ] #ak je argument --help
-then	#vykonaj veci po fi
+if [ "$1" = "--help" ] #if argument is --help, script will write help message instead
+then	#do commands till fi
     echo "Napis prve tri bajty IPv4 adresy xxx.xxx.xxx a stlac ENTER"
     exit 0
 fi
-read ip # nacitaj vstup
-for i in $(seq 254)	# rob v cykle od 1 do 254 inkrement 1
+> ipcky.txt #make txt file contain nothing
+> succPac.txt
+read ip # read input
+for i in $(seq 254)	# do in cycle from 1 to 254 increment 1
 do
-	ping_out="$(ping -c 3 $ip.$i)" #pingni 3 packety na ipcku a uloz vystup do ping out
-	if [ "$?" = 0 ]	#ak vratil ping 0 aka host reachable
+	ping_out="$(ping -c 3 $ip.$i)" #ping 3 packets at $ip.$i and save output message to $ping_out
+	if [ "$?" = 0 ]	#if ping returned 0 == host reachable
 	then
-		echo "$ping_out" > ipcky.txt # uloz output do textaku
+		echo "$ping_out" >> ipcky.txt # save output to txt file
 	fi
 done
-awk '!(NR % 3)' ipcky.txt > succPac.txt #uloz kazdu treti riadok do textaku
-head -1 succPac.txt	#velkost message pingu bola tusim 8 cize hodi to dva
-			#riadky do textaku, ale my potrebujeme len prvy
+awk '!(NR % 3)' ipcky.txt > succPac.txt #save every third line to another txt file
+head -1 succPac.txt	#every ping returns 8 lines of text, we take out every third,
+			#we get 2 lines of text per message but we only need first one, so thats
+			#why we use head -1, write every line till first, so just first
