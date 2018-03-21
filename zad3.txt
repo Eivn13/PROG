@@ -17,7 +17,7 @@ do
 		echo "$ping_out" >> ipcky.txt # save output to txt file
 	fi
 done
-awk '!(NR % 2 == 0)' ipcky.txt > succPac.txt
-awk 'NR % 2 == 0' succPac.txt > ameno.txt
-awk '!(NR % 2 == 0)' ameno.txt > catMe.txt
-cat catMe.txt
+awk '!(NR % 2 == 0)' ipcky.txt > succPac.txt	#get every uneven numbered line and save it to new txt
+awk 'NR % 2 == 0' succPac.txt > ameno.txt	#get every even numbered line ...
+awk '!(NR % 2 == 0)' ameno.txt > catMe.txt	#get every uneven ...
+cat catMe.txt					#display text file with results
