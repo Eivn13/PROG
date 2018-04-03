@@ -1,4 +1,23 @@
 #! /bin/bash
 
 #for ip in 192.168.1.$(seq 254); do ping -c 3 -t 1 $ip > ./output && echo "${ip} is up"; done
-for i in $(seq 254); do (ping 192.168.1.$i -c 3 -w 5 >/dev/null && echo "192.168.1.$i" &); done
+#for i in $(seq 254); do (ping 192.168.1.$i -c 3 -w 5 >/dev/null && echo "192.168.1.$i" &); done
+if [ "$1" = "--help" ] #ak je argument --help
+then	#vykonaj veci po fi
+    echo "Napis prve tri bajty IPv4 adresy xxx.xxx.xxx a stlac ENTER"
+    exit 0
+fi
+read ip # nacitaj vstup
+> ipcky.txt
+for i in $(seq 254)	# rob v cykle od 1 do 254 inkrement 1
+do
+	ping_out="$(ping -c 3 $ip.$i)" #pingni 3 packety na ipcku a uloz vystup do ping out
+	if [ "$?" = 0 ]	#ak vratil ping 0 aka host reachable
+	then
+		echo "$ping_out" >> ipcky.txt # uloz output do textaku
+	fi
+done
+awk '!(NR % 2 == 0)' ipcky.txt > succPac.txt #uloz kazdu treti riadok do textaku
+awk 'NR % 2  == 0' succPac.txt > ameno.txt
+awk '!(NR % 2 == 0)' ameno.txt > catMe.txt
+cat catMe.txt		
