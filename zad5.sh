@@ -18,13 +18,16 @@ do
 done
 echo ${output::-1}
 
-hddSize=$(fdisk -l | grep Disk | grep /dev/sda | cut -d "," -f1 | cut -d ":" -f2)
-echo "Capacity of hdd: $hddSize"
+#1GiB = 1.074 GB, need to convert from GiB to GB
+hddSize=$(fdisk -l | grep "Disk /dev/sda" | cut -d "," -f1 | cut -d ":" -f2)
+hddSize=${hddSize::-3}
+answer=$(bc <<< "$hddSize*1.074")
+echo "Capacity of hdd: $hddSize GB"
 
 freespace=$(df -h / | grep dev | awk '{print $4}')
-echo "Free space on / partition: $freespace"
+echo "Free space on / partition: ${freespace::-1} GB"
 
 awk '/MemTotal/ {print "Total RAM: " $2/1024 " MiB"}' /proc/meminfo
-free | awk '/Mem/ {print "Usage of RAM: " $4/$2 * 100.0 "%"}'
+free | awk '/Mem/ {print "Usage of RAM: " $3/$2 * 100.0 "%"}'
 uname -r | awk '//{print "Version of kernel: " $1 }'
 cat /etc/os-release | grep "PRETTY_NAME" | cut -d "\"" -f2 | awk '//{print "Type of distribution and version: " $1 " " $2 " " $3}'
