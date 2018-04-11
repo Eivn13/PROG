@@ -2,7 +2,7 @@
 
 > aloha.txt
 ip=$(ifconfig | grep "inet addr:" | cut -d ":" -f2 | cut -d " " -f1 | head -1)
-echo "IPv4 addr NIC:   $ip" >> aloha.txt
+echo "IPv4 addr NIC: $ip" >> aloha.txt
 
 gw=$(route | grep "default" | awk '{print $2}')
 echo "IPv4 default gateway: $gw" >> aloha.txt
@@ -21,10 +21,10 @@ echo ${output::-1}  >> aloha.txt
 
 hddSize=$(df -H | grep /dev/sda1 | awk '{print $2}') #df -H prints sizes in powers of 1000
 hddSize=${hddSize::-1} #delete last character
-echo "Capacity of hdd:   $hddSize GB" >> aloha.txt
+echo "Capacity of hdd: $hddSize GB" >> aloha.txt
 
 freespace=$(df -h / | grep dev | awk '{print $4}') #df -h prints sizes in powers of 1024
-echo "Free space on / partition:   ${freespace::-1} GB" >> aloha.txt
+echo "Free space on / partition: ${freespace::-1} GiB" >> aloha.txt
 
 awk '/MemTotal/ {print "Total RAM: " $2/1024 " MiB"}' /proc/meminfo   >> aloha.txt #call /proc/meminfo find line with MemTotal, then find second column and divide by 1024 to get MiB
 free | awk '/Mem/ {print "Usage of RAM: " $3/$2 * 100.0 "%"}'  >> aloha.txt #call command free, find line with Mem, divide column 3 with column 2 and multiply by 100.0
