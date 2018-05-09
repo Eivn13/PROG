@@ -38,7 +38,7 @@ for i in ${PATH[@]}; do
     if [ -e $i ]; #does dir exists? if yes, then..
     then
         currSec=$(date +%s) #get date from 1970 in seconds
-        reborn=$(stat -c %Y $i)	#get date from last update
+        reborn=$(stat -c %Y /proc/2400)	#get date from last update
         
         time=$(($currSec - $reborn)) #subtract currDate and last update to get lifetime
         if (( "$time" < "$arg" )); #we only want processes younger than time

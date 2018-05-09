@@ -16,8 +16,8 @@ find=""
 filename=""
 
 checkIfDir() {
-    find=$(find ~ -name "$1" 2>/dev/null)
-    if [ $(echo $(test -d "$find") $?) -ne 0 ]; then     #test, if the file is a directory
+    find=$(find ~ -name "$1" 2>/dev/null) #if find throws error, reroute to black hole
+    if [ $(echo $(test -d "$find") $?) -ne 0 ]; then     #test, if the file is a directory and if yes (returns not 0) then...
         echo "Not a directory!"
         let "errorCounter++"
 
@@ -33,7 +33,8 @@ getInput() {
     echo "Type in the name of the dir you want to backup with argument [dir -d or dir -n]:"
     read input
     
-    parameter=$(echo "$input" | rev | awk '{ print $1}' | rev)
+    parameter=$(echo "$input" | rev | awk '{ print $1}' | rev) #get input, make it read backwards, get first column, make it read backwards again
+                                                               #that gives us parameter
     if [ "$parameter" == "-d" ]; then
         saveFormat=1
     elif [ "$parameter" == "-n" ]; then
@@ -49,7 +50,7 @@ getInput() {
         getInput
     fi
 
-    filename=$(echo "${input::-3}")
+    filename=$(echo "${input::-3}") #delete last 3 chars
     numberOfLines=$(find ~ -name "$filename" 2>/dev/null | wc -l)
 
     if [ "$numberOfLines" == 0 ]; then
@@ -70,7 +71,7 @@ if [ "$saveFormat" == 0 ] #classic input without arguments
 then
     getInput
 
-    filename=$(echo "$filename" | sed -e 's/ /_/g')
+    filename=$(echo "$filename" | sed -e 's/ /_/g') #change every whitespace to _
 
     if [ "$saveFormat" == 1 ] #if format -> -d
     then
@@ -81,8 +82,8 @@ then
         backupDirectory="$filename-$(date +%M"_"%H"_"%d"_"%m"_"%Y)"
     fi
 
-    mkdir -p ~/backup/
-    cp -nR "$find" ~/backup/"$backupDirectory"
+    mkdir -p ~/backup/  #if dir exists, insert into instead of replacing
+    cp -nR "$find" ~/backup/"$backupDirectory"  #do not overwrite and dont follow symbolic links
     printf "Your backup file is stored in ~/backup/$backupDirectory\n"
 
     
